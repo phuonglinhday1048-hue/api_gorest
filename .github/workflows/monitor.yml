@@ -1,0 +1,30 @@
+name: API Monitor (Shift-Right)
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # chay moi gio
+  workflow_dispatch:       # cho phep chay tay
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GET /users response time
+        run: |
+          RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" https://gorest.co.in/public/v2/users)
+          STATUS=$(echo "$RESULT" | awk '{print $1}')
+          TIME_MS=$(echo "$RESULT" | awk '{printf "%d", $2 * 1000}')
+          echo "HTTP status: $STATUS"
+          echo "Response time: ${TIME_MS} ms"
+
+          if [ "$STATUS" -ne 200 ]; then
+            echo "FAIL: expected status 200 but got $STATUS"
+            exit 1
+          fi
+
+          if [ "$TIME_MS" -ge 800 ]; then
+            echo "FAIL: response time ${TIME_MS} ms is not under 800 ms"
+            exit 1
+          fi
+
+          echo "PASS: API is healthy (${TIME_MS} ms < 1000 ms)"
