@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "2474802010559_Phuong Linh_Monitor",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /users - Response Time",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "https://gorest.co.in/public/v2/users",
+          "protocol": "https",
+          "host": [
+            "gorest",
+            "co",
+            "in"
+          ],
+          "path": [
+            "public",
+            "v2",
+            "users"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code la 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response time < 1000ms\", () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
